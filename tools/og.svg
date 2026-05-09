@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  RetroLang Open Graph card  ·  1200 × 630.
+  Authored as SVG, rasterised to public/static/og.png with rsvg-convert
+  (`make og` or see tools/make_og.sh). Re-running the rasterisation is
+  the only step required after editing this file.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+
+  <defs>
+    <!-- Background gradient: deep navy/purple wash -->
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#100022"/>
+      <stop offset="0.5" stop-color="#08081e"/>
+      <stop offset="1"   stop-color="#02020a"/>
+    </linearGradient>
+
+    <!-- Title gradient: NEON → CYAN → NEON, sweeping -->
+    <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0"   stop-color="#b400ff"/>
+      <stop offset="0.5" stop-color="#00ffdc"/>
+      <stop offset="1"   stop-color="#b400ff"/>
+    </linearGradient>
+
+    <linearGradient id="arcadeGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0"   stop-color="#ff66ff"/>
+      <stop offset="1"   stop-color="#b400ff"/>
+    </linearGradient>
+
+    <!-- Vignette: dark corners -->
+    <radialGradient id="vignette" cx="0.5" cy="0.5" r="0.75">
+      <stop offset="0.55" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1"    stop-color="#000" stop-opacity="0.65"/>
+    </radialGradient>
+
+    <!-- CRT scanlines pattern (every 5px, 2px-thick dark stripe) -->
+    <pattern id="scanlines" x="0" y="0" width="5" height="5" patternUnits="userSpaceOnUse">
+      <rect width="5" height="5" fill="transparent"/>
+      <rect width="5" height="2" fill="#000" fill-opacity="0.35"/>
+    </pattern>
+
+    <!-- Soft glow -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3.2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="bigGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background fill -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Faint grid (purple) -->
+  <g stroke="#5000a0" stroke-opacity="0.10" stroke-width="1">
+    <g>
+      <line x1="0"   y1="0"   x2="0"   y2="630"/>
+      <line x1="50"  y1="0"   x2="50"  y2="630"/>
+      <line x1="100" y1="0"   x2="100" y2="630"/>
+      <line x1="150" y1="0"   x2="150" y2="630"/>
+      <line x1="200" y1="0"   x2="200" y2="630"/>
+      <line x1="250" y1="0"   x2="250" y2="630"/>
+      <line x1="300" y1="0"   x2="300" y2="630"/>
+      <line x1="350" y1="0"   x2="350" y2="630"/>
+      <line x1="400" y1="0"   x2="400" y2="630"/>
+      <line x1="450" y1="0"   x2="450" y2="630"/>
+      <line x1="500" y1="0"   x2="500" y2="630"/>
+      <line x1="550" y1="0"   x2="550" y2="630"/>
+      <line x1="600" y1="0"   x2="600" y2="630"/>
+      <line x1="650" y1="0"   x2="650" y2="630"/>
+      <line x1="700" y1="0"   x2="700" y2="630"/>
+      <line x1="750" y1="0"   x2="750" y2="630"/>
+      <line x1="800" y1="0"   x2="800" y2="630"/>
+      <line x1="850" y1="0"   x2="850" y2="630"/>
+      <line x1="900" y1="0"   x2="900" y2="630"/>
+      <line x1="950" y1="0"   x2="950" y2="630"/>
+      <line x1="1000" y1="0"  x2="1000" y2="630"/>
+      <line x1="1050" y1="0"  x2="1050" y2="630"/>
+      <line x1="1100" y1="0"  x2="1100" y2="630"/>
+      <line x1="1150" y1="0"  x2="1150" y2="630"/>
+    </g>
+    <g>
+      <line x1="0" y1="0"   x2="1200" y2="0"/>
+      <line x1="0" y1="50"  x2="1200" y2="50"/>
+      <line x1="0" y1="100" x2="1200" y2="100"/>
+      <line x1="0" y1="150" x2="1200" y2="150"/>
+      <line x1="0" y1="200" x2="1200" y2="200"/>
+      <line x1="0" y1="250" x2="1200" y2="250"/>
+      <line x1="0" y1="300" x2="1200" y2="300"/>
+      <line x1="0" y1="350" x2="1200" y2="350"/>
+      <line x1="0" y1="400" x2="1200" y2="400"/>
+      <line x1="0" y1="450" x2="1200" y2="450"/>
+      <line x1="0" y1="500" x2="1200" y2="500"/>
+      <line x1="0" y1="550" x2="1200" y2="550"/>
+      <line x1="0" y1="600" x2="1200" y2="600"/>
+    </g>
+  </g>
+
+  <!-- Pixel-square brand chip (mirrors favicon) -->
+  <g transform="translate(60, 60)" filter="url(#glow)">
+    <rect width="22" height="22" fill="#FF00FF"/>
+    <rect x="26" width="22" height="22" fill="#00FFDC"/>
+    <rect y="26" width="22" height="22" fill="#FFD700"/>
+    <rect x="26" y="26" width="22" height="22" fill="#00FF88"/>
+  </g>
+  <text x="120" y="92" font-family="Menlo, 'Courier New', monospace" font-size="22"
+        font-weight="bold" letter-spacing="6" fill="#e8e8ff">RETROLANG</text>
+  <text x="120" y="118" font-family="Menlo, 'Courier New', monospace" font-size="13"
+        letter-spacing="5" fill="#6a6a90">A R C A D E   ·   v 1 . 0</text>
+
+  <!-- Top-right corner: Tetris pieces (decorative) -->
+  <g transform="translate(1010, 50)" filter="url(#glow)">
+    <!-- T-piece -->
+    <g fill="#ff66cc">
+      <rect x="0"  y="0"  width="22" height="22"/>
+      <rect x="22" y="0"  width="22" height="22"/>
+      <rect x="44" y="0"  width="22" height="22"/>
+      <rect x="22" y="22" width="22" height="22"/>
+    </g>
+    <!-- L-piece, offset right -->
+    <g fill="#ffb000" transform="translate(82, 0)">
+      <rect x="0"  y="0"  width="22" height="22"/>
+      <rect x="0"  y="22" width="22" height="22"/>
+      <rect x="22" y="22" width="22" height="22"/>
+      <rect x="44" y="22" width="22" height="22"/>
+    </g>
+  </g>
+
+  <!-- ASCII RetroLang logo (centered block) -->
+  <g font-family="Menlo, 'Courier New', monospace" font-size="24" font-weight="bold"
+     fill="url(#logoGrad)" filter="url(#bigGlow)" xml:space="preserve">
+    <text x="280" y="220">   ____      _             _</text>
+    <text x="280" y="248">  |  _ \ ___| |_ _ __ ___ | |    __ _ _ __   __ _</text>
+    <text x="280" y="276">  | |_) / _ \ __| '__/ _ \| |   / _` | '_ \ / _` |</text>
+    <text x="280" y="304">  |  _ &lt;  __/ |_| | | (_) | |__| (_| | | | | (_| |</text>
+    <text x="280" y="332">  |_| \_\___|\__|_|  \___/|_____\__,_|_| |_|\__, |</text>
+    <text x="280" y="360">                                             |___/</text>
+  </g>
+
+  <!-- ARCADE word-mark -->
+  <text x="600" y="450" font-family="Menlo, 'Courier New', monospace" font-size="78"
+        font-weight="bold" fill="url(#arcadeGrad)" text-anchor="middle"
+        letter-spacing="20" filter="url(#bigGlow)">ARCADE</text>
+
+  <!-- Tagline -->
+  <text x="600" y="498" font-family="Menlo, 'Courier New', monospace" font-size="20"
+        fill="#cdd1f0" text-anchor="middle" letter-spacing="3">
+    A retro arcade scripting language  ·  6 compiler phases  ·  live in your browser
+  </text>
+
+  <!-- Phase chain (bottom band) -->
+  <g transform="translate(0, 545)" font-family="Menlo, 'Courier New', monospace"
+     font-size="14" letter-spacing="3" fill="#00ffdc" filter="url(#glow)">
+    <text x="600" y="0" text-anchor="middle">
+      LEX → PARSE → SEMANTIC → IR → OPTIMIZE → CODEGEN
+    </text>
+  </g>
+
+  <!-- Footer -->
+  <text x="600" y="600" font-family="Menlo, 'Courier New', monospace" font-size="13"
+        fill="#6a6a90" text-anchor="middle" letter-spacing="4">
+    github.com/taha-zaidii/RetroLang   ·   CS4031 · SPRING 2026 · FAST-NU KARACHI
+  </text>
+
+  <!-- Scanlines + vignette overlays go LAST so they sit on top -->
+  <rect width="1200" height="630" fill="url(#scanlines)"/>
+  <rect width="1200" height="630" fill="url(#vignette)"/>
+
+  <!-- Subtle outer frame (cabinet edge) -->
+  <rect x="6" y="6" width="1188" height="618" fill="none"
+        stroke="#5000a0" stroke-opacity="0.55" stroke-width="2" rx="14"/>
+</svg>
