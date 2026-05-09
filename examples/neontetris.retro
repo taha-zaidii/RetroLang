@@ -1,0 +1,34 @@
+// neontetris.retro — full Tetris with 7 standard pieces and neon theme.
+// Demonstrates the falling-piece game mode and progressive difficulty.
+
+game "NeonTetris"
+    grid 10 x 20
+    block_size 32
+    background #0D0D1A
+    theme NEON
+
+pieces
+    define I [1,1,1,1]                color #00FFFF
+    define O [[1,1],[1,1]]             color #FFD700
+    define T [[0,1,0],[1,1,1]]         color #FF00FF
+    define S [[0,1,1],[1,1,0]]         color #00FF88
+    define Z [[1,1,0],[0,1,1]]         color #FF4444
+    define L [[1,0],[1,0],[1,1]]       color #FF8800
+    define J [[0,1],[0,1],[1,1]]       color #8800FF
+
+rules
+    gravity_speed   500ms
+    speedup_every   5 lines
+    score_per_line  100
+    bonus_tetris    400
+    game_over       on_top_collision
+
+controls
+    move_left  KEY_LEFT
+    move_right KEY_RIGHT
+    rotate     KEY_UP
+    soft_drop  KEY_DOWN
+    hard_drop  KEY_SPACE
+    pause      KEY_P
+    restart    KEY_R
+    quit       KEY_Q

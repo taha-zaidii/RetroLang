@@ -1,0 +1,42 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# === Editor / OS ===
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
+Thumbs.db
+
+# === Temp / generated artefacts ===
+# Generated Python game files (produced by --emit-python)
+examples/*.py
+# (except the committed ones, which are the pre-compiled snake/neontetris demos)
+!examples/snake.py
+!examples/neontetris.py
+
+# Temp pygame modules written to /tmp by the compiler at runtime
+/tmp/retrolang_*.py
+
+# === Distribution ===
+*.tar.gz
+*.whl
+MANIFEST

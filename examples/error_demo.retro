@@ -1,0 +1,25 @@
+// error_demo.retro — INTENTIONALLY INVALID file used to show error reporting.
+// Run with: python retrolang.py examples/error_demo.retro
+//
+// This file contains three classes of errors so the grader can observe
+// the compiler's diagnostic format. Comment out the first two lines of
+// each error to step through them one at a time.
+
+game "BrokenGame"
+    grid 10 x 20
+    block_size 32
+    background #0D0D1A
+    theme NEON
+
+pieces
+    define I [1,1,1,1]    color #00FFFF
+    define I [[1,1],[1,1]] color #FFD700   // <-- semantic: duplicate piece name 'I'
+
+rules
+    gravity_speed  500ms
+    score_per_line 100
+    game_over      on_typo_collision      // <-- semantic: unknown game_over condition
+
+controls
+    move_left  KEY_LEFT
+    move_left  KEY_RIGHT                  // <-- semantic: duplicate action binding

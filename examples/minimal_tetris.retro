@@ -1,0 +1,23 @@
+// minimal_tetris.retro — smallest possible compilable program.
+// One piece, smallest grid, demonstrates baseline parser/semantic acceptance.
+
+game "Minimal"
+    grid 6 x 10
+    block_size 24
+    background #000022
+    theme DEFAULT
+
+pieces
+    define O [[1,1],[1,1]] color #FFFFFF
+
+rules
+    gravity_speed  600ms
+    score_per_line 50
+    game_over      on_top_collision
+
+controls
+    move_left  KEY_LEFT
+    move_right KEY_RIGHT
+    rotate     KEY_UP
+    soft_drop  KEY_DOWN
+    hard_drop  KEY_SPACE

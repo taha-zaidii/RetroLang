@@ -1,0 +1,28 @@
+// snake.retro — Same compiler, different game mode (CRT-green Snake).
+// Demonstrates the snake_mode block selecting an entirely different game engine.
+
+game "RetroSnake"
+    grid 20 x 20
+    block_size 24
+    background #001100
+    theme CRT_GREEN
+
+snake_mode
+    start_length 3
+    food_count   1
+    wrap_edges   false
+    speed        200ms
+
+rules
+    score_per_food 50
+    game_over      on_self_collision
+    game_over      on_wall_collision
+
+controls
+    move_up    KEY_UP
+    move_down  KEY_DOWN
+    move_left  KEY_LEFT
+    move_right KEY_RIGHT
+    pause      KEY_P
+    restart    KEY_R
+    quit       KEY_Q

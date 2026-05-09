@@ -1,0 +1,30 @@
+// classictetris.retro — old-school monochrome Tetris.
+// Demonstrates the MONO theme and conservative rule values.
+
+game "ClassicTetris"
+    grid 10 x 20
+    block_size 28
+    background #000000
+    theme MONO
+
+pieces
+    define I [1,1,1,1]                color #DDDDDD
+    define O [[1,1],[1,1]]             color #DDDDDD
+    define T [[0,1,0],[1,1,1]]         color #DDDDDD
+    define L [[1,0],[1,0],[1,1]]       color #DDDDDD
+
+rules
+    gravity_speed   650ms
+    speedup_every   10 lines
+    score_per_line  100
+    bonus_tetris    300
+    game_over       on_top_collision
+
+controls
+    move_left  KEY_A
+    move_right KEY_D
+    rotate     KEY_W
+    soft_drop  KEY_S
+    hard_drop  KEY_SPACE
+    pause      KEY_P
+    quit       KEY_Q
