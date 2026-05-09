@@ -1,0 +1,25 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "functions": {
+    "api/compile.py": {
+      "memory": 512,
+      "maxDuration": 10,
+      "includeFiles": "src/**"
+    },
+    "api/examples.py": {
+      "memory": 256,
+      "maxDuration": 5,
+      "includeFiles": "examples/**"
+    }
+  },
+  "headers": [
+    {
+      "source": "/static/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    }
+  ]
+}

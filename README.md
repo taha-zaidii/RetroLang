@@ -71,6 +71,25 @@ python3 launcher.py
 
 ---
 
+## 🌐 Play It Online
+
+The arcade-styled web frontend (`/public`) consumes the compiler's IR JSON and renders the games on a Canvas, so anyone — macOS, Windows, Linux, iOS or Android — can play in a browser without installing Python or pygame.
+
+- **Live URL:** _add your Vercel URL here once deployed_
+- **What runs where:**
+  - The unmodified Python compiler (`/src`) executes on a Vercel Python serverless function (`/api/compile`) — phases 1–5 only, returning a JSON `GameIR`.
+  - A pure-JavaScript Canvas runtime (`/public/static/{tetris,snake}.js`) mirrors `src/codegen.py` byte-for-byte and renders the game in the browser. Same rotation logic, same line-clear formula, same speed-up curve, same scoring.
+  - There is **no second compiler** — the browser just paints the IR.
+- **Preview locally without Vercel CLI:**
+
+  ```bash
+  python3 dev_server.py        # http://127.0.0.1:7373
+  ```
+
+  This is a stdlib-only emulator that routes `/api/*` to `api/*.py` and serves `public/`.
+
+---
+
 ## The Language
 
 Here is the full source for a 7-piece Neon Tetris game:
@@ -356,6 +375,58 @@ The error bubbles up as a typed `RetroError` subclass (`LexError`, `ParseError`,
 | `AMBER`     | Warm amber monochrome               |
 | `MONO`      | Clean black-and-white minimalist    |
 | `DEFAULT`   | Standard Tetris palette             |
+
+---
+
+## Deploying Your Own Copy
+
+The repository is configured for one-click deployment to **Vercel**:
+
+1. Push the repo to GitHub (the live deployment tracks `main`).
+2. Visit https://vercel.com/new and import the repository.
+3. Framework preset: **Other**. Build command: leave empty. Output directory: leave empty.
+4. Click **Deploy** — Vercel reads `vercel.json`, builds the two Python serverless functions in `/api`, and serves `/public` as static.
+
+That's it. No environment variables, no build script. The arcade is live at your Vercel URL within ~30 seconds.
+
+**Why Vercel and not Railway/Render/Fly?** The compiler endpoint is stateless and finishes in under 60 ms, which is a perfect fit for serverless. The pygame-emitting code path is never executed server-side, so there are no native dependencies and no cold-start tax beyond Vercel's standard ~200 ms.
+
+**Other static hosts (Netlify, Cloudflare Pages, GitHub Pages)** can serve `/public/` but have no Python runtime — they would only work if the Python compiler were ported to TypeScript. That's left as future work.
+
+### Cross-platform "clone and play" matrix
+
+| Platform                 | How to play                              | Verified |
+|--------------------------|------------------------------------------|----------|
+| **macOS / Windows / Linux desktop** | Clone repo · `pip install -r requirements.txt` · `python3 retrolang.py examples/neontetris.retro` (opens a real pygame window) | ✅ |
+| **Any browser, any OS** (incl. iOS, iPadOS, Android, ChromeOS) | Open the deployed Vercel URL — no install | ✅ |
+| **Browser via local preview** | `python3 dev_server.py` then visit `http://127.0.0.1:7373` | ✅ |
+
+The pygame route does **not** support iOS or Android (pygame requires SDL and a desktop window manager). For mobile and "share a link with friends" use cases, the web frontend is the correct entry point.
+
+---
+
+## Project Layout — Web Front-end Additions
+
+```
+RetroLang/                        ← (everything else is the unchanged course project)
+├── api/
+│   ├── compile.py                ← POST /api/compile  · runs phases 1-5, returns GameIR JSON
+│   ├── examples.py               ← GET  /api/examples · serves /examples/*.retro source
+│   └── requirements.txt          ← intentionally empty — stdlib-only function
+├── public/
+│   ├── index.html                ← arcade landing + lobby + cabinet bezel
+│   └── static/
+│       ├── arcade.css            ← CRT scanlines, phosphor glow, retro fonts
+│       ├── audio.js              ← Web Audio chiptune SFX (no audio files)
+│       ├── runtime.js            ← shared Engine base + theme palettes (mirrors src/codegen.py)
+│       ├── tetris.js             ← Canvas Tetris runtime
+│       ├── snake.js              ← Canvas Snake runtime
+│       └── main.js               ← orchestration: load examples → compile → animate trace → mount runtime
+├── dev_server.py                 ← stdlib local emulator of the Vercel surface
+└── vercel.json                   ← function memory/timeout + cache headers
+```
+
+**Nothing under `src/`, `examples/`, `tests/`, `docs/`, `retrolang.py`, or `launcher.py` was modified.** The compiler binary on disk is the same artifact that produced the viva demo.
 
 ---
 

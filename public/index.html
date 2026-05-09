@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#06060f">
+<title>RetroLang Arcade — Compile a .retro file. Play the game.</title>
+<meta name="description" content="A hand-built compiler for a retro-arcade scripting language. Write a .retro file, run it through six classical compiler phases, play the game in your browser.">
+<meta property="og:title" content="RetroLang Arcade">
+<meta property="og:description" content="A hand-built compiler for a retro-arcade scripting language. Six phases, in your browser.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23070718'/%3E%3Crect x='14' y='14' width='12' height='12' fill='%23ff00ff'/%3E%3Crect x='38' y='14' width='12' height='12' fill='%2300ffdc'/%3E%3Crect x='14' y='38' width='12' height='12' fill='%23ffd700'/%3E%3Crect x='38' y='38' width='12' height='12' fill='%2300ff88'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap">
+<link rel="stylesheet" href="/static/arcade.css">
+</head>
+<body>
+
+<!-- ========== CRT overlay (always on, pure CSS) ========== -->
+<div class="crt-scanlines" aria-hidden="true"></div>
+<div class="crt-vignette" aria-hidden="true"></div>
+<div class="crt-flicker" aria-hidden="true"></div>
+
+<!-- ========== Boot screen ========== -->
+<section id="boot" class="boot active" aria-label="Boot screen">
+  <div class="boot-inner">
+    <pre class="boot-logo" aria-hidden="true">
+   ____      _             _
+  |  _ \ ___| |_ _ __ ___ | |    __ _ _ __   __ _
+  | |_) / _ \ __| '__/ _ \| |   / _` | '_ \ / _` |
+  |  _ &lt;  __/ |_| | | (_) | |__| (_| | | | | (_| |
+  |_| \_\___|\__|_|  \___/|_____\__,_|_| |_|\__, |
+                                             |___/</pre>
+    <div class="boot-line" id="boot-log"></div>
+    <button id="insert-coin" class="coin-btn" aria-label="Insert coin to start">
+      <span class="coin-glow">▼ INSERT COIN ▼</span>
+      <span class="coin-sub">PRESS ANY KEY</span>
+    </button>
+    <div class="boot-credits">
+      CS4031 — Compiler Construction · Spring 2026 · FAST-NU Karachi<br>
+      Syed Taha Zaidi · Shahmeer Irfan · Hamza Nasir Lodi
+    </div>
+  </div>
+</section>
+
+<!-- ========== Main arcade UI ========== -->
+<main id="cab" class="cab hidden">
+
+  <header class="topbar">
+    <a href="/" class="brand">
+      <span class="brand-pixels"><i></i><i></i><i></i><i></i></span>
+      <span class="brand-text">RETROLANG <span class="brand-sub">ARCADE</span></span>
+    </a>
+    <nav class="topnav">
+      <a href="https://github.com/taha-zaidii/RetroLang" target="_blank" rel="noopener">GITHUB ↗</a>
+      <button id="sfx-toggle" class="navbtn" aria-pressed="true" title="Toggle sound">SFX: ON</button>
+    </nav>
+  </header>
+
+  <!-- ========== Lobby (game select) ========== -->
+  <section id="lobby" class="screen lobby active">
+    <div class="lobby-header">
+      <h1 class="title-flicker">SELECT YOUR GAME</h1>
+      <p class="sub">Five demo programs. One compiler. Six phases each. Click a card and watch your <code>.retro</code> source flow through lex → parse → semantic → IR → optimize → codegen — and then play.</p>
+    </div>
+    <div id="cards" class="cards" aria-live="polite"></div>
+
+    <div class="lobby-footer">
+      <details class="own-game">
+        <summary>+ Write your own <code>.retro</code> program</summary>
+        <div class="own-body">
+          <textarea id="own-source" spellcheck="false" wrap="off"
+            placeholder="game &quot;MyGame&quot;
+    grid 10 x 20
+    block_size 32
+    background #0D0D1A
+    theme NEON
+
+pieces
+    define I [1,1,1,1] color #00FFFF
+
+rules
+    gravity_speed   500ms
+    speedup_every   5 lines
+    score_per_line  100
+    game_over       on_top_collision
+
+controls
+    move_left  KEY_LEFT
+    move_right KEY_RIGHT
+    rotate     KEY_UP
+    soft_drop  KEY_DOWN
+    hard_drop  KEY_SPACE
+    pause      KEY_P
+    restart    KEY_R
+    quit       KEY_Q
+"></textarea>
+          <button id="own-launch" class="primary-btn">⚙ COMPILE &amp; PLAY</button>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ========== Compile screen (phase trace animation) ========== -->
+  <section id="compile" class="screen compile" hidden>
+    <div class="cab-bezel">
+      <div class="cab-screen">
+        <div class="trace" id="trace"></div>
+      </div>
+    </div>
+    <div class="compile-foot">
+      <span id="compile-status">Initialising compiler…</span>
+      <button id="compile-cancel" class="navbtn">CANCEL</button>
+    </div>
+  </section>
+
+  <!-- ========== Game screen ========== -->
+  <section id="play" class="screen play" hidden>
+    <div class="play-grid">
+      <div class="cab-bezel">
+        <div class="cab-screen">
+          <canvas id="canvas" width="320" height="704" tabindex="0"></canvas>
+        </div>
+        <div class="cab-marquee" id="marquee">RETROLANG · NEON TETRIS</div>
+      </div>
+
+      <aside class="hud">
+        <div class="hud-card hud-stats">
+          <div class="hud-row"><span>SCORE</span><b id="hud-score">0</b></div>
+          <div class="hud-row" id="hud-row2"><span>LINES</span><b id="hud-lines">0</b></div>
+          <div class="hud-row" id="hud-row3"><span>LEVEL</span><b id="hud-level">1</b></div>
+          <div class="hud-row" id="hud-row-len" hidden><span>LENGTH</span><b id="hud-len">0</b></div>
+        </div>
+
+        <div class="hud-card">
+          <h4>CONTROLS</h4>
+          <ul id="hud-keys" class="keylist"></ul>
+        </div>
+
+        <div class="hud-card">
+          <h4>COMPILED FROM</h4>
+          <div class="src-meta" id="src-meta"></div>
+          <button id="show-source" class="navbtn">VIEW .retro SOURCE</button>
+          <button id="show-trace"  class="navbtn">VIEW PHASE TRACE</button>
+        </div>
+
+        <div class="hud-card">
+          <h4>GAME</h4>
+          <button id="restart-btn" class="navbtn">RESTART</button>
+          <button id="back-btn" class="primary-btn">← BACK TO LOBBY</button>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ========== Source / trace modal ========== -->
+  <div id="modal" class="modal" hidden>
+    <div class="modal-card">
+      <header class="modal-head">
+        <h3 id="modal-title">Source</h3>
+        <button id="modal-close" class="navbtn">CLOSE ✕</button>
+      </header>
+      <pre id="modal-body"></pre>
+    </div>
+  </div>
+
+  <!-- ========== Compile-error toast ========== -->
+  <div id="toast" class="toast" hidden></div>
+
+  <footer class="cab-foot">
+    <div>© 2026 RetroLang · Educational project · CS4031 FAST-NU Karachi</div>
+    <div class="cab-foot-r">
+      Pure JS runtime · Compiler in Python · Six classical phases · No spyware, no trackers
+    </div>
+  </footer>
+</main>
+
+<!-- ========== Scripts ========== -->
+<script src="/static/audio.js"></script>
+<script src="/static/runtime.js"></script>
+<script src="/static/tetris.js"></script>
+<script src="/static/snake.js"></script>
+<script src="/static/main.js"></script>
+</body>
+</html>

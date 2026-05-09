@@ -1,0 +1,3 @@
+# No external dependencies — the compile endpoint uses only the Python
+# stdlib plus the pure-Python modules under ../src/. pygame is NOT needed
+# server-side; it is only emitted as a string into the codegen output.
