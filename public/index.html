@@ -41,6 +41,7 @@
       CS4031 — Compiler Construction · Spring 2026 · FAST-NU Karachi<br>
       Syed Taha Zaidi · Shahmeer Irfan · Hamza Nasir Lodi
     </div>
+    <div class="boot-tip">tip: press <kbd>?</kbd> any time for the Player's Manual</div>
   </div>
 </section>
 
@@ -53,6 +54,10 @@
       <span class="brand-text">RETROLANG <span class="brand-sub">ARCADE</span></span>
     </a>
     <nav class="topnav">
+      <button id="manual-btn" class="navbtn manual-btn" title="Open Player's Manual (?)" aria-label="Open Player's Manual">
+        <span class="manual-pip" aria-hidden="true"></span>
+        <span class="manual-label">MANUAL</span>
+      </button>
       <a href="https://github.com/taha-zaidii/RetroLang" target="_blank" rel="noopener">GITHUB ↗</a>
       <button id="sfx-toggle" class="navbtn" aria-pressed="true" title="Toggle sound">SFX: ON</button>
     </nav>
@@ -181,6 +186,7 @@ controls
 <script src="/static/runtime.js"></script>
 <script src="/static/tetris.js"></script>
 <script src="/static/snake.js"></script>
+<script src="/static/guide.js"></script>
 <script src="/static/main.js"></script>
 </body>
 </html>

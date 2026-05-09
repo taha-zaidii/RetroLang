@@ -359,6 +359,23 @@
       if (state.sfxOn) Retro.SFX.beep(700, .05);
     });
 
+    /* Player's Manual — button, ? key, first-visit hint */
+    const manualBtn = $('#manual-btn');
+    if (manualBtn && Retro.Guide) {
+      if (!Retro.Guide.hasBeenSeen()) manualBtn.classList.add('hint');
+      manualBtn.addEventListener('click', () => Retro.Guide.open());
+    }
+    document.addEventListener('keydown', e => {
+      if (!Retro.Guide) return;
+      if ($('#boot').classList.contains('active')) return;
+      const tag = e.target?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      // '?' fires from Shift+/ on US layouts; some layouts deliver it directly
+      if (e.key === '?' || (e.shiftKey && e.key === '/')) {
+        if (!Retro.Guide.isOpen()) { e.preventDefault(); Retro.Guide.open(); }
+      }
+    });
+
     /* Number-key game launch from lobby */
     document.addEventListener('keydown', e => {
       if ($('#boot').classList.contains('active')) return;

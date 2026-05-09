@@ -507,3 +507,400 @@ body {
 @media (pointer: coarse), (max-width: 640px) {
   #mobile-pad { display: inline-flex; flex-wrap: wrap; max-width: 280px; }
 }
+
+/* ===================================================================
+   PLAYER'S MANUAL  (guide.js)
+   =================================================================== */
+
+.boot-tip {
+  margin-top: 22px;
+  font-size: 11px; color: var(--dim);
+  letter-spacing: .12em;
+}
+.boot-tip kbd {
+  background: var(--bg-deep); border: 1px solid var(--line);
+  padding: 1px 6px; border-radius: 3px; font-size: 10px; color: var(--cyan);
+}
+
+/* Topbar MANUAL button + first-visit pulsing pip */
+.manual-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  position: relative;
+}
+.manual-pip {
+  display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--amber);
+  box-shadow: 0 0 6px rgba(255,176,0,.7);
+  opacity: 0; transition: opacity .2s;
+}
+.manual-btn.hint .manual-pip { opacity: 1; animation: manual-pulse 1.4s ease-in-out infinite; }
+.manual-btn.hint              { border-color: var(--amber); color: var(--amber); }
+.manual-btn.hint:hover        { box-shadow: var(--shadow-amber); }
+@keyframes manual-pulse {
+  0%,100% { transform: scale(1);   opacity: 1;   }
+  50%     { transform: scale(1.4); opacity: .55; }
+}
+
+/* Lock background scroll while guide is open */
+html.guide-open, html.guide-open body { overflow: hidden; }
+
+/* ---------- overlay frame ---------- */
+
+.guide {
+  position: fixed; inset: 0; z-index: 250;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at center, rgba(10,0,30,.85) 0%, rgba(0,0,0,.92) 100%);
+  backdrop-filter: blur(6px);
+  animation: guide-in .22s ease-out;
+  padding: 18px;
+}
+.guide[hidden] { display: none; }
+@keyframes guide-in { from{opacity:0; transform:scale(.985)} to{opacity:1; transform:none} }
+
+.guide-frame {
+  width: min(960px, 100%); height: min(720px, 92vh);
+  display: grid; grid-template-rows: auto 1fr auto;
+  background: linear-gradient(180deg, #0a0a1f 0%, #060614 100%);
+  border: 1px solid var(--neon);
+  border-radius: 14px;
+  box-shadow:
+    0 0 0 2px #0c0c1a,
+    0 0 0 4px #1a1a2a,
+    var(--shadow-neon),
+    0 30px 80px rgba(0,0,0,.7);
+  overflow: hidden;
+  position: relative;
+}
+/* CRT highlight on the manual frame */
+.guide-frame::after {
+  content:''; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 130% 50% at 50% -10%, rgba(255,255,255,.05), transparent 45%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, rgba(0,0,0,.35), transparent 70%);
+  border-radius: 14px;
+}
+
+/* ---------- header ---------- */
+
+.guide-head {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(180,0,255,.06) 0%, transparent 100%);
+}
+.guide-title-row { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.guide-tag {
+  font-family: 'Press Start 2P', monospace; font-size: 9px;
+  letter-spacing: .14em; padding: 4px 8px;
+  border: 1px solid var(--cyan); color: var(--cyan); border-radius: 3px;
+  text-shadow: 0 0 6px rgba(0,255,220,.4);
+  white-space: nowrap;
+}
+.guide-head h2 {
+  font-family: 'Press Start 2P', monospace; font-size: 13px;
+  color: var(--neon); letter-spacing: .14em;
+  text-shadow: 0 0 8px rgba(180,0,255,.55);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* pager dots */
+.guide-pager {
+  display: flex; align-items: center; gap: 6px;
+  flex-wrap: wrap; justify-content: center;
+}
+.guide-dot {
+  background: transparent; border: 1px solid var(--line-2); color: var(--muted);
+  padding: 4px 9px; border-radius: 30px; cursor: pointer;
+  font-family: inherit; font-size: 10px; letter-spacing: .12em;
+  transition: all .15s; min-width: 28px;
+}
+.guide-dot:hover { color: var(--cyan); border-color: var(--cyan); }
+.guide-dot.active {
+  border-color: var(--neon); color: var(--neon);
+  background: rgba(180,0,255,.12);
+  text-shadow: 0 0 6px rgba(180,0,255,.6);
+}
+
+/* ---------- body ---------- */
+
+.guide-body {
+  overflow: auto;
+  padding: 24px 28px;
+  outline: none;
+}
+.guide-body.gp-anim { animation: page-fade .25s ease-out; }
+@keyframes page-fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.gp-h {
+  font-family: 'Press Start 2P', monospace; font-size: 13px;
+  color: var(--cyan); letter-spacing: .14em;
+  text-shadow: 0 0 8px rgba(0,255,220,.5);
+  margin-bottom: 14px;
+}
+.gp-h2 {
+  font-family: 'Press Start 2P', monospace; font-size: 10px;
+  color: var(--amber); letter-spacing: .14em;
+  margin: 18px 0 10px;
+  text-shadow: 0 0 6px rgba(255,176,0,.45);
+}
+.gp p, .gp li {
+  color: var(--text); font-size: 14px; line-height: 1.65;
+}
+.gp p + p { margin-top: 10px; }
+.gp code {
+  color: var(--cyan); background: rgba(0,255,220,.08);
+  padding: 1px 6px; border-radius: 3px; font-size: 13px;
+}
+.gp kbd {
+  background: var(--bg-deep); border: 1px solid var(--line-2);
+  padding: 1px 6px; margin: 0 2px;
+  border-radius: 3px; font-size: 11px; color: var(--cyan);
+  font-family: 'Share Tech Mono', monospace;
+  text-shadow: 0 0 4px rgba(0,255,220,.3);
+}
+.gp-sub  { color: var(--muted); font-size: 13px; line-height: 1.6; margin-bottom: 14px; }
+.gp-tip  {
+  margin-top: 18px;
+  padding: 12px 14px;
+  background: rgba(0,255,120,.04);
+  border-left: 2px solid var(--green);
+  color: var(--text); font-size: 13px; line-height: 1.6;
+  border-radius: 0 6px 6px 0;
+}
+.gp-foot-hint {
+  margin-top: 22px;
+  color: var(--muted); font-size: 12px; letter-spacing: .08em;
+}
+
+/* ---------- Page 1: WELCOME ---------- */
+
+.gp-welcome { text-align: center; max-width: 720px; margin: 0 auto; }
+.gp-ascii {
+  font-family: ui-monospace, 'Share Tech Mono', monospace;
+  font-size: 12px; line-height: 1.2;
+  color: var(--cyan);
+  text-shadow: 0 0 8px rgba(0,255,220,.6), 0 0 24px rgba(180,0,255,.35);
+  margin-bottom: 24px; white-space: pre; overflow-x: auto;
+}
+.gp-stat-row {
+  display: grid; gap: 12px; margin: 22px 0 12px;
+  grid-template-columns: repeat(4, 1fr);
+}
+.gp-stat {
+  border: 1px solid var(--line-2); background: var(--panel-2);
+  padding: 14px 8px; border-radius: 8px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.gp-stat b {
+  font-family: 'Press Start 2P', monospace; font-size: 22px; color: var(--neon);
+  text-shadow: 0 0 8px rgba(180,0,255,.5);
+}
+.gp-stat span { color: var(--muted); font-size: 11px; letter-spacing: .08em; }
+
+/* ---------- Page 2: STEPS ---------- */
+
+.gp-step-list { list-style: none; padding: 0; }
+.gp-step-list > li {
+  display: grid; grid-template-columns: 56px 1fr; gap: 18px; align-items: start;
+  padding: 16px 0; border-bottom: 1px dashed var(--line);
+}
+.gp-step-list > li:last-child { border-bottom: 0; }
+.gp-step-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px;
+  border: 2px solid var(--neon); color: var(--neon);
+  border-radius: 50%;
+  font-family: 'Press Start 2P', monospace; font-size: 16px;
+  text-shadow: 0 0 10px rgba(180,0,255,.6);
+  box-shadow: 0 0 14px rgba(180,0,255,.25), inset 0 0 14px rgba(180,0,255,.04);
+}
+.gp-step-list h4 {
+  font-family: 'Press Start 2P', monospace; font-size: 11px;
+  color: var(--cyan); letter-spacing: .12em; margin-bottom: 6px;
+  text-shadow: 0 0 6px rgba(0,255,220,.5);
+}
+
+/* ---------- Page 3: PHASES ---------- */
+
+.gp-chain {
+  display: flex; gap: 8px; align-items: stretch; flex-wrap: wrap;
+  margin: 14px 0 18px;
+}
+.gp-chain-node {
+  flex: 1 1 130px; min-width: 130px;
+  background: var(--panel-2); border: 1px solid var(--line-2);
+  border-radius: 8px; padding: 12px; cursor: default;
+  transition: all .2s; position: relative;
+  outline: none;
+}
+.gp-chain-node:hover, .gp-chain-node:focus {
+  border-color: var(--neon);
+  box-shadow: var(--shadow-neon);
+  transform: translateY(-2px);
+}
+.gp-chain-num {
+  font-family: 'Press Start 2P', monospace; font-size: 14px;
+  color: var(--neon); margin-bottom: 4px;
+  text-shadow: 0 0 6px rgba(180,0,255,.5);
+}
+.gp-chain-name {
+  font-family: 'Press Start 2P', monospace; font-size: 9px;
+  color: var(--cyan); letter-spacing: .12em; margin-bottom: 6px;
+  text-shadow: 0 0 5px rgba(0,255,220,.4);
+}
+.gp-chain-out  { font-size: 11px; color: var(--amber); margin-bottom: 6px; }
+.gp-chain-why  { font-size: 11px; color: var(--muted); line-height: 1.5; }
+.gp-chain-arrow {
+  display: flex; align-items: center;
+  color: var(--neon); font-size: 16px;
+  text-shadow: 0 0 6px rgba(180,0,255,.5);
+  align-self: center;
+}
+
+.gp-demo-row {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 14px; align-items: stretch; margin-top: 16px;
+}
+.gp-demo-src, .gp-demo-out {
+  background: #02020a; border: 1px solid var(--line);
+  border-radius: 6px; padding: 12px;
+  font-family: 'Share Tech Mono', monospace; font-size: 12px; line-height: 1.5;
+  white-space: pre; overflow: auto; max-height: 260px; min-height: 200px;
+}
+.gp-demo-arrow {
+  display: flex; align-items: center; justify-content: center;
+  color: var(--neon); font-size: 22px;
+  text-shadow: 0 0 8px rgba(180,0,255,.6);
+}
+.gp-demo-cta { display: flex; justify-content: center; margin-top: 12px; }
+
+/* trace styling on the manual demo (smaller/cleaner) */
+.gp-demo-out.trace { color: var(--green); font-size: 12px; }
+.gp-demo-out .ph   { color: var(--cyan);  text-shadow: 0 0 5px rgba(0,255,220,.4); }
+.gp-demo-out .ok   { color: var(--green); }
+.gp-demo-out .err  { color: var(--red);   text-shadow: 0 0 5px rgba(255,60,60,.4); }
+.gp-demo-out .dim  { color: var(--dim); }
+
+/* ---------- Page 4: LANGUAGE TOUR ---------- */
+
+.gp-lang-grid {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) minmax(0, 1.05fr);
+  background: #02020a; border: 1px solid var(--line);
+  border-radius: 6px; overflow: hidden;
+  font-family: 'Share Tech Mono', monospace; font-size: 13px; line-height: 1.6;
+}
+.gp-lang-num  { padding: 2px 0 2px 10px; color: var(--dim); user-select: none; }
+.gp-lang-line { padding: 2px 0; white-space: pre; overflow: auto; }
+.gp-lang-note { padding: 2px 14px; color: var(--muted); font-size: 12px; }
+
+/* syntax colors */
+.syn-comment { color: #5e5e80; font-style: italic; }
+.syn-string  { color: #00ff88; }
+.syn-hex     { color: #ff8800; }
+.syn-time    { color: #ffd700; }
+.syn-num     { color: #ffd700; }
+.syn-kw      { color: #b400ff; font-weight: bold; }
+.syn-rule    { color: #00ffdc; }
+.syn-action  { color: #ff66cc; }
+.syn-theme   { color: #ffb000; }
+.syn-cond    { color: #ff4477; }
+.syn-key     { color: #00ffdc; font-weight: bold; }
+.syn-ident   { color: #cdd1f0; }
+.syn-punct   { color: #6a6a90; }
+
+/* ---------- Page 5: CONTROLS ---------- */
+
+.gp-key-grid {
+  display: grid; gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+.gp-key {
+  display: grid; grid-template-columns: 110px 1fr; gap: 10px; align-items: center;
+  padding: 10px 12px;
+  border: 1px solid var(--line-2); border-radius: 6px;
+  background: var(--panel-2);
+}
+.gp-kbd {
+  font-family: 'Press Start 2P', monospace; font-size: 10px;
+  text-align: center; padding: 7px 10px;
+  border: 1px solid var(--cyan); color: var(--cyan); border-radius: 4px;
+  text-shadow: 0 0 6px rgba(0,255,220,.45);
+  box-shadow: inset 0 -2px 0 rgba(0,255,220,.15);
+}
+.gp-key span { color: var(--text); font-size: 13px; }
+
+/* ---------- Page 6: TIPS ---------- */
+
+.gp-tip-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.gp-tip-list li {
+  background: var(--panel-2); border: 1px solid var(--line-2);
+  padding: 12px 14px; border-left: 2px solid var(--cyan); border-radius: 0 6px 6px 0;
+  font-size: 13px; line-height: 1.6;
+}
+.gp-tip-list li b { color: var(--cyan); }
+
+/* ---------- Page 7: CREDITS ---------- */
+
+.gp-credits-grid {
+  display: grid; gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+.gp-credits-grid > div {
+  background: var(--panel-2); border: 1px solid var(--line-2);
+  border-radius: 8px; padding: 16px;
+}
+.gp-credits-grid h4 {
+  font-family: 'Press Start 2P', monospace; font-size: 10px;
+  color: var(--neon); letter-spacing: .14em; margin-bottom: 10px;
+  text-shadow: 0 0 6px rgba(180,0,255,.4);
+}
+.gp-credits-grid p { font-size: 13px; color: var(--text); margin-bottom: 4px; }
+.gp-credits-grid a { color: var(--cyan); text-decoration: none; }
+.gp-credits-grid a:hover { text-decoration: underline; text-shadow: 0 0 6px rgba(0,255,220,.5); }
+.gp-credit-list { list-style: none; padding: 0; }
+.gp-credit-list li {
+  display: flex; justify-content: space-between; gap: 8px;
+  font-size: 13px; padding: 4px 0;
+  border-bottom: 1px dashed var(--line);
+}
+.gp-credit-list li:last-child { border-bottom: 0; }
+.gp-id { color: var(--muted); font-family: 'Share Tech Mono', monospace; }
+
+/* ---------- footer / nav ---------- */
+
+.guide-foot {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px;
+  padding: 12px 18px; border-top: 1px solid var(--line);
+  background: linear-gradient(0deg, rgba(0,0,0,.3) 0%, transparent 100%);
+}
+.guide-foot .navbtn { min-width: 110px; }
+.guide-foot .navbtn[disabled] { opacity: .35; cursor: not-allowed; }
+.guide-hint {
+  text-align: center; color: var(--muted); font-size: 11px; letter-spacing: .08em;
+}
+.guide-hint kbd {
+  background: var(--bg-deep); border: 1px solid var(--line); padding: 1px 6px;
+  border-radius: 3px; color: var(--cyan); font-size: 10px; margin: 0 2px;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+/* ---------- mobile ---------- */
+
+@media (max-width: 720px) {
+  .guide { padding: 0; }
+  .guide-frame { width: 100%; height: 100vh; border-radius: 0; border: 0; }
+  .guide-head  { grid-template-columns: 1fr auto; row-gap: 8px; padding: 10px 14px; }
+  .guide-pager { grid-column: 1 / -1; justify-content: flex-start; }
+  .guide-body  { padding: 18px 14px; }
+  .gp-stat-row { grid-template-columns: 1fr 1fr; }
+  .gp-demo-row { grid-template-columns: 1fr; }
+  .gp-demo-arrow { transform: rotate(90deg); }
+  .gp-lang-grid { grid-template-columns: 22px 1fr; }
+  .gp-lang-note { display: none; }   /* annotations hidden on phone */
+  .guide-foot  { grid-template-columns: 1fr 1fr; }
+  .guide-hint  { grid-column: 1 / -1; order: 3; }
+}
