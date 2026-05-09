@@ -389,6 +389,7 @@ body {
   font-size: 14px; padding: 4px 0;
   border-bottom: 1px dashed var(--line);
 }
+.hud-row[hidden] { display: none; }
 .hud-row:last-child { border-bottom: 0; }
 .hud-row span { color: var(--muted); letter-spacing: .12em; font-size: 11px; }
 .hud-row b {
@@ -422,6 +423,7 @@ body {
   background: rgba(0,0,0,.65); backdrop-filter: blur(4px);
   animation: fade .15s ease-out;
 }
+.modal[hidden] { display: none; }
 @keyframes fade { from{opacity:0} to{opacity:1} }
 .modal-card {
   width: min(820px, 92vw); max-height: 86vh; overflow: hidden;
